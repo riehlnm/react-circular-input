@@ -27,6 +27,7 @@ type DefaultHTMLProps = JSX.IntrinsicElements['svg']
 type Props = Omit<DefaultHTMLProps, 'onChange'> & {
 	value: number
 	radius?: number
+	zoom?: number
 	onChange?: (value: number) => void
 	onChangeEnd?: (value: number) => void
 	// disallow some props
@@ -40,6 +41,7 @@ type Props = Omit<DefaultHTMLProps, 'onChange'> & {
 export function CircularInput({
 	value = 0.25,
 	radius = 100,
+	zoom = 1.0,
 	onChange = () => {},
 	onChangeEnd = () => {},
 	tabIndex = 0,
@@ -49,6 +51,7 @@ export function CircularInput({
 	const containerRef: RefObject<SVGSVGElement> = useRef(null)
 	const size = radius * 2
 	const center = useMemo(() => ({ x: radius, y: radius }), [radius])
+	const zoom_center = useMemo(() => ({ x: zoom * radius, y: zoom * radius }), [zoom, radius])
 
 	// Accessibility
 	const [isFocused, setFocused] = useState(false)
@@ -121,10 +124,10 @@ export function CircularInput({
 					containerRef.current
 				) as Coordinates,
 				value,
-				center,
+				center: zoom_center,
 				radius,
 			}),
-		[value, center, radius]
+		[value, zoom_center, radius]
 	)
 
 	// Context
